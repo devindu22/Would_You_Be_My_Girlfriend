@@ -62,3 +62,17 @@ Styling: Adjust colors and animations using the Tailwind class syntax embedded w
 ## 👤 Author
 
 Made with 💘 by Devindu Malshan
+
+## Screenshots
+
+<img width="1917" height="917" alt="Screenshot 2026-07-06 095226" src="https://github.com/user-attachments/assets/dc80ee2b-3138-4d71-b0c7-f27f3dfe0352" />
+
+<img width="1917" height="917" alt="Screenshot 2026-07-06 095237" src="https://github.com/user-attachments/assets/ff52278f-bcbf-4e49-bbc2-4a91070d34ed" />
+
+<img width="1917" height="915" alt="Screenshot 2026-07-06 095307" src="https://github.com/user-attachments/assets/14814ca4-036a-4dac-8564-4cbbf89f5ddc" />
+
+<img width="1917" height="918" alt="Screenshot 2026-07-06 095328" src="https://github.com/user-attachments/assets/28a51e39-f6f3-40e4-86ca-e30c73f2f85b" />
+
+<img width="1917" height="917" alt="Screenshot 2026-07-06 095347" src="https://github.com/user-attachments/assets/24978899-7261-44f0-9b39-49242dcc3c8a" />
+
+<img width="1917" height="916" alt="Screenshot 2026-07-06 095401" src="https://github.com/user-attachments/assets/6195a31f-b6dd-43ea-b9bc-8dbe86411e81" />

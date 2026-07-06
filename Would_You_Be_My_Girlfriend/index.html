@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Special Question For You 💌</title>
+    
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts for romantic typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        h1, h2, .fancy-font {
+            font-family: 'Dancing Script', cursive;
+        }
+
+        /* Glassmorphism card effect */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 8px 32px 0 rgba(255, 105, 135, 0.2);
+        }
+
+        /* Custom Input */
+        .custom-input:focus {
+            outline: none;
+            border-color: #ff4d6d;
+            box-shadow: 0 0 0 3px rgba(255, 77, 109, 0.2);
+        }
+
+        /* Radio Buttons Customization */
+        .radio-label input[type="radio"] {
+            display: none;
+        }
+        .radio-label {
+            transition: all 0.3s ease;
+        }
+        .radio-label:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 77, 109, 0.15);
+        }
+        .radio-label input[type="radio"]:checked + div {
+            background-color: #ff4d6d;
+            color: white;
+            border-color: #ff4d6d;
+        }
+
+        /* Floating Hearts Animation */
+        .floating-heart {
+            position: absolute;
+            bottom: -10vh;
+            font-size: 24px;
+            animation: floatUp 8s linear infinite;
+            opacity: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) scale(0.8) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-120vh) scale(1.2) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Confetti Animation */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: #ff4d6d;
+            z-index: 50;
+            animation: fall 3s linear forwards;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(720deg);
+            }
+        }
+
+        /* Runaway button transition */
+        #btn-no {
+            transition: top 0.2s ease, left 0.2s ease, transform 0.1s;
+        }
+
+        /* Ensure content sits above floating hearts */
+        .content-wrapper {
+            position: relative;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-between text-gray-800">
+
+    <div id="hearts-container" class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <!-- Hearts will be injected here by JS -->
+    </div>
+
+    <main class="content-wrapper flex-grow flex items-center justify-center w-full p-4 sm:p-6 mt-10">
+        
+        <!-- App Container -->
+        <div id="app" class="glass-card w-full max-w-lg rounded-3xl p-8 sm:p-10 text-center transition-all duration-500 transform scale-100 opacity-100">
+            
+            <!-- Progress Indicator -->
+            <div id="progress-container" class="flex justify-center space-x-2 mb-8">
+                <div class="h-2 w-8 bg-pink-500 rounded-full transition-all duration-300"></div>
+                <div class="h-2 w-8 bg-pink-200 rounded-full transition-all duration-300"></div>
+                <div class="h-2 w-8 bg-pink-200 rounded-full transition-all duration-300"></div>
+                <div class="h-2 w-8 bg-pink-200 rounded-full transition-all duration-300"></div>
+            </div>
+
+            <!-- Content Area dynamically updated -->
+            <div id="question-content" class="min-h-[250px] flex flex-col justify-center">
+                <!-- Question text -->
+                <h2 id="question-text" class="text-2xl sm:text-3xl font-bold mb-6 text-gray-800 leading-tight">
+                    Hey there! I have a few very important questions for you...
+                </h2>
+                
+                <!-- Inputs container -->
+                <div id="input-container" class="flex flex-col gap-4 mb-6">
+                    <button onclick="nextStep()" class="mt-4 bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1 w-full sm:w-auto mx-auto">
+                        Let's Go! 💖
+                    </button>
+                </div>
+
+                <!-- Error message container -->
+                <p id="error-msg" class="text-red-500 text-sm font-semibold hidden opacity-0 transition-opacity duration-300">
+                    Please answer the question to continue! 😉
+                </p>
+            </div>
+
+            <!-- Action buttons container (Hidden initially) -->
+            <div id="action-buttons" class="hidden mt-6 flex-row gap-4 justify-center items-center relative h-16 w-full">
+                <!-- Yes Button -->
+                <button id="btn-yes" onclick="showSuccess()" class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-110 z-20 text-lg w-32">
+                    YES! 🥰
+                </button>
+                <!-- No Button (The tricky one) -->
+                <button id="btn-no" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-bold py-3 px-8 rounded-full shadow-lg z-20 text-lg w-32 absolute right-0">
+                    No 😢
+                </button>
+            </div>
+
+        </div>
+
+    </main>
+
+    <footer class="content-wrapper w-full text-center py-6 text-pink-700 font-medium">
+        <p class="text-lg">Made with 💘 by Devindu Malshan</p>
+    </footer>
+
+    <script>
+        // State management for the questionnaire
+        let currentStep = 0;
+
+        // The questions array defines the flow of the app
+        const questions = [
+            {
+                type: 'intro',
+                text: "Hey! I have a few very important questions for you...",
+                buttonText: "Let's Go! 💖"
+            },
+            {
+                type: 'choice',
+                text: "First up, what's the ultimate way to spend a lazy Sunday?",
+                options: [
+                    "Binge-watching our favorite shows 🍿",
+                    "Trying out a cute new cafe ☕",
+                    "Taking a really long nap 😴",
+                    "Going for a random adventure 🌳"
+                ]
+            },
+            {
+                type: 'text',
+                text: "If we got stranded on a desert island together, what's the one thing you'd bring? 🌴",
+                placeholder: "Type your answer..."
+            },
+            {
+                type: 'choice',
+                text: "Be honest... do you smile when my name pops up on your phone? 📱",
+                options: [
+                    "Always! 😊",
+                    "Maybe just a little bit 🫣",
+                    "I plead the fifth 🤐"
+                ]
+            },
+            {
+                type: 'final',
+                text: "So... I really like you. Would you want to make this official and be my girlfriend? ❤️"
+            }
+        ];
+
+        // DOM Elements
+        const questionText = document.getElementById('question-text');
+        const inputContainer = document.getElementById('input-container');
+        const progressContainer = document.getElementById('progress-container');
+        const errorMsg = document.getElementById('error-msg');
+        const actionButtons = document.getElementById('action-buttons');
+        const btnNo = document.getElementById('btn-no');
+        const appCard = document.getElementById('app');
+
+        function nextStep() {
+            // Validate previous step before moving on
+            if (currentStep > 0 && currentStep < questions.length - 1) {
+                const currentQ = questions[currentStep];
+                let isValid = false;
+
+                if (currentQ.type === 'choice') {
+                    const selected = document.querySelector('input[name="q-choice"]:checked');
+                    if (selected) isValid = true;
+                } else if (currentQ.type === 'text') {
+                    const textInput = document.getElementById('text-input');
+                    if (textInput && textInput.value.trim() !== '') isValid = true;
+                }
+
+                if (!isValid) {
+                    showError();
+                    return;
+                }
+            }
+
+            hideError();
+            currentStep++;
+
+            // Fade out effect
+            appCard.classList.remove('opacity-100', 'scale-100');
+            appCard.classList.add('opacity-0', 'scale-95');
+
+            setTimeout(() => {
+                renderStep();
+                // Fade in effect
+                appCard.classList.remove('opacity-0', 'scale-95');
+                appCard.classList.add('opacity-100', 'scale-100');
+            }, 300);
+        }
+
+        function renderStep() {
+            if (currentStep >= questions.length) return;
+            
+            const q = questions[currentStep];
+            questionText.innerText = q.text;
+            inputContainer.innerHTML = ''; // Clear previous inputs
+            actionButtons.classList.add('hidden'); // Hide final buttons by default
+
+            // Update Progress Bar
+            updateProgress();
+
+            if (q.type === 'choice') {
+                const grid = document.createElement('div');
+                grid.className = 'grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4 text-left';
+                
+                q.options.forEach((opt, index) => {
+                    const label = document.createElement('label');
+                    label.className = 'radio-label cursor-pointer block';
+                    label.innerHTML = `
+                        <input type="radio" name="q-choice" value="${index}">
+                        <div class="border-2 border-pink-200 rounded-xl p-4 text-gray-700 bg-white bg-opacity-50 font-medium h-full flex items-center">
+                            ${opt}
+                        </div>
+                    `;
+                    grid.appendChild(label);
+                });
+                
+                inputContainer.appendChild(grid);
+                addNextButton();
+
+            } else if (q.type === 'text') {
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.id = 'text-input';
+                input.placeholder = q.placeholder;
+                input.className = 'custom-input w-full border-2 border-pink-200 rounded-xl p-4 text-gray-800 bg-white bg-opacity-70 font-medium mt-4 text-lg text-center';
+                
+                // Allow hitting 'Enter' to submit
+                input.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        nextStep();
+                    }
+                });
+
+                inputContainer.appendChild(input);
+                addNextButton();
+                
+                // Focus the input automatically on desktop
+                setTimeout(() => input.focus(), 100);
+
+            } else if (q.type === 'final') {
+                // For the final step, show the Yes/No buttons, hide progress
+                progressContainer.style.display = 'none';
+                
+                // We show the action buttons instead of a generic NEXT button
+                actionButtons.classList.remove('hidden');
+                actionButtons.classList.add('flex');
+                
+                // Adjust layout for button container
+                actionButtons.style.justifyContent = 'center';
+                
+                // Reset positions just in case
+                const btnYes = document.getElementById('btn-yes');
+                btnNo.style.position = 'relative';
+                btnNo.style.left = 'auto';
+                btnNo.style.top = 'auto';
+                btnYes.style.position = 'relative';
+
+                // Setup the trick for the 'No' button
+                setupRunawayButton();
+            }
+        }
+
+        function addNextButton() {
+            const btn = document.createElement('button');
+            btn.innerText = "Next ➔";
+            btn.onclick = nextStep;
+            btn.className = "mt-6 bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-8 rounded-full shadow-md hover:shadow-lg transition-all mx-auto w-full sm:w-auto";
+            inputContainer.appendChild(btn);
+        }
+
+        function updateProgress() {
+            // Only steps 1 through 3 get progress (intro is 0, final is 4)
+            if (currentStep > 0 && currentStep < 4) {
+                const bars = progressContainer.children;
+                for (let i = 0; i < bars.length; i++) {
+                    if (i < currentStep) {
+                        bars[i].classList.replace('bg-pink-200', 'bg-pink-500');
+                    } else {
+                        bars[i].classList.replace('bg-pink-500', 'bg-pink-200');
+                    }
+                }
+            }
+        }
+
+        function showError() {
+            errorMsg.classList.remove('hidden');
+            // Small delay to allow CSS transition
+            setTimeout(() => {
+                errorMsg.classList.remove('opacity-0');
+            }, 10);
+            
+            // Shake effect
+            appCard.classList.add('animate-pulse');
+            setTimeout(() => appCard.classList.remove('animate-pulse'), 500);
+        }
+
+        function hideError() {
+            errorMsg.classList.add('opacity-0');
+            setTimeout(() => {
+                errorMsg.classList.add('hidden');
+            }, 300);
+        }
+
+        function setupRunawayButton() {
+            // Desktop hover evasion
+            btnNo.addEventListener('mouseover', moveButton);
+            
+            // Mobile touch evasion (touchstart fires before click)
+            btnNo.addEventListener('touchstart', function(e) {
+                e.preventDefault(); // Prevents the actual click/tap from registering
+                moveButton();
+            }, { passive: false });
+        }
+
+        function moveButton() {
+            // We change it to fixed position to move it anywhere on the screen
+            btnNo.style.position = 'fixed';
+            
+            // Calculate safe boundaries so the button doesn't go off-screen
+            const btnWidth = btnNo.offsetWidth;
+            const btnHeight = btnNo.offsetHeight;
+            
+            // Padding so it doesn't touch the exact edge
+            const padding = 20; 
+            
+            const maxX = window.innerWidth - btnWidth - padding;
+            const maxY = window.innerHeight - btnHeight - padding;
+            
+            // Generate random X and Y coordinates
+            const randomX = Math.max(padding, Math.random() * maxX);
+            const randomY = Math.max(padding, Math.random() * maxY);
+            
+            // Apply new coordinates
+            btnNo.style.left = `${randomX}px`;
+            btnNo.style.top = `${randomY}px`;
+        }
+
+        function showSuccess() {
+            // Fade out the current card
+            appCard.classList.add('opacity-0', 'scale-95');
+            
+            setTimeout(() => {
+                // Reconstruct the card for the success message
+                appCard.innerHTML = `
+                    <div class="py-8">
+                        <h2 class="text-4xl md:text-6xl font-bold text-pink-600 mb-6 fancy-font">Yay! 🎉</h2>
+                        
+                        <div class="text-7xl md:text-8xl mb-8 flex justify-center items-center space-x-2 animate-bounce">
+                            <span>🧸</span>
+                            <span>💖</span>
+                        </div>
+                        
+                        <h3 class="text-2xl font-bold text-gray-800 mb-3">I knew you'd say yes! 😉</h3>
+                        <p class="text-gray-600 text-lg">Take a screenshot of this and send me a text so I know it's real! 📱💖</p>
+                    </div>
+                `;
+                
+                appCard.classList.remove('opacity-0', 'scale-95');
+                appCard.classList.add('opacity-100', 'scale-100');
+                
+                // Launch Confetti
+                createConfetti();
+            }, 300);
+        }
+
+        function createFloatingHearts() {
+            const container = document.getElementById('hearts-container');
+            const emojis = ['💖', '💕', '💘', '💗', '💓'];
+            
+            // Create a new heart every 400ms
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.className = 'floating-heart';
+                heart.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+                
+                // Randomize starting position and size
+                heart.style.left = `${Math.random() * 100}vw`;
+                heart.style.fontSize = `${Math.random() * 20 + 15}px`;
+                heart.style.animationDuration = `${Math.random() * 4 + 6}s`; // 6s to 10s
+                
+                container.appendChild(heart);
+                
+                // Clean up heart after animation ends
+                setTimeout(() => {
+                    heart.remove();
+                }, 10000);
+            }, 400);
+        }
+
+        function createConfetti() {
+            const colors = ['#ff4d6d', '#ff758f', '#ff8fa3', '#ffb3c1', '#ffffff'];
+            
+            for (let i = 0; i < 100; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    
+                    // Randomize position, color, and trajectory
+                    confetti.style.left = `${Math.random() * 100}vw`;
+                    confetti.style.top = `-10px`;
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    
+                    // Random shapes
+                    if (Math.random() > 0.5) confetti.style.borderRadius = '50%';
+                    
+                    document.body.appendChild(confetti);
+                    
+                    // Cleanup
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 30);
+            }
+        }
+
+        // Initialize background effects on load
+        window.onload = function() {
+            createFloatingHearts();
+        };
+
+    </script>
+</body>
+</html>

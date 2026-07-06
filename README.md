@@ -41,13 +41,6 @@ To share this link with her, you can host it online for free using platforms lik
 *   **Netlify / Vercel:** Drag and drop the project folder directly onto their deployment dashboards.
 *   **InfinityFree:** Upload via FTP to your standard web directory.
 
----
-
-## 📁 File Structure
-
-```text
-├── index.html         # Main source code containing HTML, Tailwind CDN, and Javascript
-└── README.md          # Project documentation and guide
 
 ---
 
@@ -59,9 +52,13 @@ Questions: Edit the text blocks inside the id="step-1", id="step-2", and id="ste
 
 Styling: Adjust colors and animations using the Tailwind class syntax embedded within the file.
 
+---
+
 ## 👤 Author
 
 Made with 💘 by Devindu Malshan
+
+---
 
 ## Screenshots
 
@@ -76,3 +73,12 @@ Made with 💘 by Devindu Malshan
 <img width="1917" height="917" alt="Screenshot 2026-07-06 095347" src="https://github.com/user-attachments/assets/24978899-7261-44f0-9b39-49242dcc3c8a" />
 
 <img width="1917" height="916" alt="Screenshot 2026-07-06 095401" src="https://github.com/user-attachments/assets/6195a31f-b6dd-43ea-b9bc-8dbe86411e81" />
+
+---
+
+## 📁 File Structure
+
+```text
+├── index.html         # Main source code containing HTML, Tailwind CDN, and Javascript
+└── README.md          # Project documentation and guide
+
